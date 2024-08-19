@@ -1,0 +1,19 @@
+name: CICD
+
+on:
+  push:
+
+jobs:
+  arm-deploy:
+    name: ARM Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test
+        run: |
+          echo "***********************"
+          echo "Test"
+          echo "***********************"
