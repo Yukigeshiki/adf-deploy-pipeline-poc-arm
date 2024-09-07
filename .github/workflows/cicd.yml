@@ -32,8 +32,8 @@ jobs:
             if [ -d "$folder/" ]; then
               cd "$folder"
               az deployment group create -g bicpoc-rg-development \
-                --template-file ARMTemplateForBICPOCFactory.json \
-                --parameters @ARMTemplateParametersForBICPOCFactory.json
+                --template-file BICPOCFactory.json \
+                --parameters @BICPOCFactoryParametersDevelopment.json
             else
               echo "Pipeline Does not exist!"
               exit 1
@@ -61,8 +61,8 @@ jobs:
             if [ -d "$folder/" ]; then
               cd "$folder"
               az deployment group create -g bicpoc-rg-test \
-                --template-file ARMTemplateForBICPOCFactory.json \
-                --parameters @ARMTemplateParametersForBICPOCFactory.json
+                --template-file BICPOCFactory.json \
+                --parameters @BICPOCFactoryParametersTest.json
             else
               echo "Pipeline Does not exist!"
               exit 1
