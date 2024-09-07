@@ -22,24 +22,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Branch
-        run: |
-          echo "***********************"
-          echo "$BRANCH_NAME"
-          echo "***********************"
-
-      - name: Choose Folder
-        run: |
-          export str=$BRANCH_NAME
-          export folder="${str%%/*}"
-          echo "$folder"
-          if [ -d "$folder/" ]; then
-            cd "$folder"
-          else
-            echo "Pipeline Does not exist!"
-            exit 1
-          fi
-
       - name: Deploy
         uses: azure/cli@v2
         with:
@@ -47,20 +29,15 @@ jobs:
           inlineScript: |
             export str=$BRANCH_NAME
             export folder="${str%%/*}"
-            echo "$folder"
             if [ -d "$folder/" ]; then
               cd "$folder"
-            pwd
-              az deployment group create -g bicpoc-rg-development --template-file ARMTemplateForBICPOCFactory.json --parameters @ARMTemplateParametersForBICPOCFactory.json
+              az deployment group create -g bicpoc-rg-development \
+                --template-file ARMTemplateForBICPOCFactory.json \
+                --parameters @ARMTemplateParametersForBICPOCFactory.json
             else
               echo "Pipeline Does not exist!"
               exit 1
             fi
-#        with:
-#          resourceGroupName: bicpoc-rg-development
-#          template: ./ARMTemplateForBICPOCFactory.json
-#          parameters: ./ARMTemplateParametersForBICPOCFactory.json
-#          additionalArguments: "--what-if --rollback-on-error --what-if-exclude-change-types Create Ignore"
 
   if_merged:
     if: github.event.action == 'closed' && github.event.pull_request.merged == true
@@ -74,21 +51,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Branch
-        run: |
-          echo "***********************"
-          echo "$BRANCH_NAME"
-          echo "***********************"
-
-      - name: Choose Folder
-        run: |
-          if [ -d "$BRANCH_NAME/" ]; then
-            cd "${$BRANCH_NAME%%/*}"
-          else
-            echo "Pipeline Does not exist!"
-            exit 1
-          fi
-
       - name: Deploy
         uses: azure/cli@v2
         with:
@@ -96,11 +58,12 @@ jobs:
           inlineScript: |
             export str=$BRANCH_NAME
             export folder="${str%%/*}"
-            echo "$folder"
             if [ -d "$folder/" ]; then
-            cd "$folder"
+              cd "$folder"
+              az deployment group create -g bicpoc-rg-test \
+                --template-file ARMTemplateForBICPOCFactory.json \
+                --parameters @ARMTemplateParametersForBICPOCFactory.json
             else
-            echo "Pipeline Does not exist!"
-            exit 1
+              echo "Pipeline Does not exist!"
+              exit 1
             fi
-            az deployment group create -g bicpoc-rg-development --template-file ARMTemplateForBICPOCFactory.json --parameters @ARMTemplateParametersForBICPOCFactory.json
