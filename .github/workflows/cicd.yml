@@ -1,16 +1,18 @@
 name: CICD
 
 on:
-  push:
-    branches: [ main ]
-    paths-ignore:
-      - 'README.md'
+  pull_request:
+    branches:
+      - 'main'
+    types: [ opened, synchronize, closed ]
+
+env:
+  BRANCH_NAME: "${{ github.head_ref }}"
 
 jobs:
-  arm-deploy:
-    name: ARM Deploy
+  if_opened_or_pushed_to:
     runs-on: ubuntu-latest
-
+    if: github.event.action != 'closed'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,10 +22,48 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Test
-        uses: azure/arm-deploy@v2
+      - name: Deploy
+        uses: azure/cli@v2
         with:
-          resourceGroupName: bicpoc-rg-development
-          template: ./bicpoc/ARMTemplateForBICPOCFactory.json
-          parameters: ./bicpoc/ARMTemplateParametersForBICPOCFactory.json
-          additionalArguments: "--what-if --rollback-on-error --what-if-exclude-change-types Create Ignore"
+          azcliversion: latest
+          inlineScript: |
+            export str=$BRANCH_NAME
+            export folder="${str%%/*}"
+            if [ -d "$folder/" ]; then
+              cd "$folder"
+              az deployment group create -g bicpoc-rg-development \
+                --template-file BICPOCFactory.json \
+                --parameters @BICPOCFactoryParametersDevelopment.json
+            else
+              echo "Pipeline Does not exist!"
+              exit 1
+            fi
+
+  if_merged:
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            export str=$BRANCH_NAME
+            export folder="${str%%/*}"
+            if [ -d "$folder/" ]; then
+              cd "$folder"
+              az deployment group create -g bicpoc-rg-test \
+                --template-file BICPOCFactory.json \
+                --parameters @BICPOCFactoryParametersTest.json
+            else
+              echo "Pipeline Does not exist!"
+              exit 1
+            fi
