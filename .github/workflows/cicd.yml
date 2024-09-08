@@ -33,7 +33,7 @@ jobs:
               cd "$folder"
               az deployment group create -g bicpoc-rg-development \
                 --template-file BICPOCFactory.json \
-                --parameters @BICPOCFactoryParametersDevelopment.json
+                --parameters @ParametersDevelopment.json
             else
               echo "Pipeline Does not exist!"
               exit 1
@@ -62,7 +62,7 @@ jobs:
               cd "$folder"
               az deployment group create -g bicpoc-rg-test \
                 --template-file BICPOCFactory.json \
-                --parameters @BICPOCFactoryParametersTest.json
+                --parameters @ParametersTest.json
             else
               echo "Pipeline Does not exist!"
               exit 1
