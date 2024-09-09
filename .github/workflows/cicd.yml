@@ -27,10 +27,9 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            export str=$BRANCH_NAME
-            export folder="${str%%/*}"
-            if [ -d "$folder/" ]; then
-              cd "$folder"
+            pipeline_folder="${BRANCH_NAME%%/*}"
+            if [ -d "$pipeline_folder/" ]; then
+              cd "$pipeline_folder"
               az deployment group create -g bicpoc-rg-development \
                 --template-file BICPOCFactory.json \
                 --parameters @ParametersDevelopment.json
@@ -56,10 +55,9 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            export str=$BRANCH_NAME
-            export folder="${str%%/*}"
-            if [ -d "$folder/" ]; then
-              cd "$folder"
+            pipeline_folder="${BRANCH_NAME%%/*}"
+            if [ -d "$pipeline_folder/" ]; then
+              cd "$pipeline_folder"
               az deployment group create -g bicpoc-rg-test \
                 --template-file BICPOCFactory.json \
                 --parameters @ParametersTest.json
