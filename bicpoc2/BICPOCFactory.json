@@ -17,7 +17,7 @@
     },
     "resources": [
         {
-            "name": "[concat(parameters('factoryName'), '/ArmtemplateSampleCopyPipeline')]",
+            "name": "[concat(parameters('factoryName'), '/sample_copy_pipeline')]",
             "type": "Microsoft.DataFactory/factories/pipelines",
             "apiVersion": "2018-06-01",
             "properties": {
@@ -54,14 +54,14 @@
                         },
                         "inputs": [
                             {
-                                "referenceName": "ArmtemplateTestDatasetIn",
+                                "referenceName": "test_dataset_in",
                                 "type": "DatasetReference",
                                 "parameters": {}
                             }
                         ],
                         "outputs": [
                             {
-                                "referenceName": "ArmtemplateTestDatasetOut",
+                                "referenceName": "test_dataset_out",
                                 "type": "DatasetReference",
                                 "parameters": {}
                             }
@@ -72,15 +72,15 @@
                     "elapsedTimeMetric": {}
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-09-07T11:17:08Z"
+                "lastPublishTime": "2024-09-09T09:55:18Z"
             },
             "dependsOn": [
-                "[concat(variables('factoryId'), '/datasets/ArmtemplateTestDatasetIn')]",
-                "[concat(variables('factoryId'), '/datasets/ArmtemplateTestDatasetOut')]"
+                "[concat(variables('factoryId'), '/datasets/test_dataset_in')]",
+                "[concat(variables('factoryId'), '/datasets/test_dataset_out')]"
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/ArmtemplateTestDatasetIn')]",
+            "name": "[concat(parameters('factoryName'), '/test_dataset_in')]",
             "type": "Microsoft.DataFactory/factories/datasets",
             "apiVersion": "2018-06-01",
             "properties": {
@@ -104,7 +104,7 @@
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/ArmtemplateTestDatasetOut')]",
+            "name": "[concat(parameters('factoryName'), '/test_dataset_out')]",
             "type": "Microsoft.DataFactory/factories/datasets",
             "apiVersion": "2018-06-01",
             "properties": {
