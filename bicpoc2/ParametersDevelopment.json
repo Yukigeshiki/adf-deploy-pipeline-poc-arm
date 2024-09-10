@@ -5,7 +5,7 @@
         "factoryName": {
             "value": "bicpoc-development-df"
         },
-        "ArmtemplateStorageLinkedService_connectionString": {
+        "storage_linked_service_connectionString": {
             "value": ""
         }
     }
