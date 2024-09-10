@@ -7,9 +7,9 @@
             "metadata": "Data Factory name",
             "defaultValue": "bicpoc-development-df"
         },
-        "ArmtemplateStorageLinkedService_connectionString": {
+        "storage_linked_service_connectionString": {
             "type": "secureString",
-            "metadata": "Secure string for 'connectionString' of 'ArmtemplateStorageLinkedService'"
+            "metadata": "Secure string for 'connectionString' of 'storage_linked_service'"
         }
     },
     "variables": {
@@ -85,7 +85,7 @@
             "apiVersion": "2018-06-01",
             "properties": {
                 "linkedServiceName": {
-                    "referenceName": "ArmtemplateStorageLinkedService",
+                    "referenceName": "storage_linked_service",
                     "type": "LinkedServiceReference"
                 },
                 "annotations": [],
@@ -100,7 +100,7 @@
                 }
             },
             "dependsOn": [
-                "[concat(variables('factoryId'), '/linkedServices/ArmtemplateStorageLinkedService')]"
+                "[concat(variables('factoryId'), '/linkedServices/storage_linked_service')]"
             ]
         },
         {
@@ -109,7 +109,7 @@
             "apiVersion": "2018-06-01",
             "properties": {
                 "linkedServiceName": {
-                    "referenceName": "ArmtemplateStorageLinkedService",
+                    "referenceName": "storage_linked_service",
                     "type": "LinkedServiceReference"
                 },
                 "annotations": [],
@@ -123,18 +123,18 @@
                 }
             },
             "dependsOn": [
-                "[concat(variables('factoryId'), '/linkedServices/ArmtemplateStorageLinkedService')]"
+                "[concat(variables('factoryId'), '/linkedServices/storage_linked_service')]"
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/ArmtemplateStorageLinkedService')]",
+            "name": "[concat(parameters('factoryName'), '/storage_linked_service')]",
             "type": "Microsoft.DataFactory/factories/linkedServices",
             "apiVersion": "2018-06-01",
             "properties": {
                 "annotations": [],
                 "type": "AzureBlobStorage",
                 "typeProperties": {
-                    "connectionString": "[parameters('ArmtemplateStorageLinkedService_connectionString')]"
+                    "connectionString": "[parameters('storage_linked_service_connectionString')]"
                 }
             },
             "dependsOn": []
