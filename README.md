@@ -3,4 +3,4 @@ A deploy pipeline PoC for ADF using ARM files.
 
 ### Deploy From Local Env
 
-az deployment group create -g bicpoc-rg-development --template-file BICPOCFactory.json --parameters @ParametersDevelopment.json
+az deployment group create -g bicpoc-rg-development --template-file Factory.json --parameters @ParametersDevelopment.json

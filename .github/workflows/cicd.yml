@@ -31,7 +31,7 @@ jobs:
             if [ -d "$pipeline_dir/" ]; then
               cd "$pipeline_dir"
               az deployment group create -g bicpoc-rg-test \
-                --template-file BICPOCFactory.json \
+                --template-file Factory.json \
                 --parameters @ParametersTest.json
             else
               echo "***************************** SKIPPING DEPLOY ******************************"
@@ -60,7 +60,7 @@ jobs:
             if [ -d "$pipeline_dir/" ]; then
               cd "$pipeline_dir"
               az deployment group create -g bicpoc-rg-production \
-                --template-file BICPOCFactory.json \
+                --template-file Factory.json \
                 --parameters @ParametersProduction.json
             else
               echo "***************************** SKIPPING DEPLOY ******************************"
