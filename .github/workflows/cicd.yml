@@ -27,7 +27,7 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            pipeline_dir="${BRANCH_NAME%%/*}"
+            pipeline_dir=`echo "${BRANCH_NAME}" | cut -d '/' -f 2`
             if [ -d "$pipeline_dir/" ]; then
               cd "$pipeline_dir"
               az deployment group create -g bicpoc-rg-test \
@@ -39,8 +39,8 @@ jobs:
               echo "****************************************************************************"
             fi
 
-  if_merged:
-    if: github.event.action == 'closed' && github.event.pull_request.merged == true
+  if_merged_not_release:
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -56,14 +56,47 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            pipeline_dir="${BRANCH_NAME%%/*}"
+            pipeline_dir=`echo "${BRANCH_NAME}" | cut -d '/' -f 2`
             if [ -d "$pipeline_dir/" ]; then
               cd "$pipeline_dir"
               az deployment group create -g bicpoc-rg-production \
                 --template-file Factory.json \
-                --parameters @ParametersProduction.json
+                --parameters @ParametersStaging.json
             else
               echo "***************************** SKIPPING DEPLOY ******************************"
               echo "Branch prefix '$pipeline_dir' does not represent a pipeline directory."
               echo "****************************************************************************"
             fi
+
+  if_merged_release:
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            pipeline_dirs=`echo "${BRANCH_NAME}" | cut -d '/' -f 2 | tr ',' ' '`
+            pipeline_dirs_arr=($pipeline_dirs)
+            for i in "${!pipeline_dirs_arr[@]}"; do
+              pipeline_dir="${pipeline_dirs_arr[$i]}"
+              if [ -d "$pipeline_dir/" ]; then
+                cd "$pipeline_dir"
+                az deployment group create -g bicpoc-rg-production \
+                  --template-file Factory.json \
+                  --parameters @ParametersProduction.json
+              else
+                echo "***************************** SKIPPING DEPLOY ******************************"
+                echo "Branch prefix '$pipeline_dir' does not represent a pipeline directory."
+                echo "****************************************************************************"
+              fi
+            done
