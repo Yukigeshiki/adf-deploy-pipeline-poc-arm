@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "factoryName": {
-      "value": "bicpoc-test-df"
+      "value": "bicpoc-test-df-1"
     },
     "storage_linked_service_connectionString": {
       "value": ""
